@@ -8,6 +8,7 @@ var options={
 			alt:"react",
 			label:"React JS",
 			paragraph:"React is the new sexy js library"
+
 		},
 		{
 			imageUrl:"https://avatars0.githubusercontent.com/u/6200624?v=3&s=400",
