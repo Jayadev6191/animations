@@ -42,7 +42,7 @@ var server = ['bundle'];
 gulp.task('serve', function() {
     browserSync.init({
 			server:{
-				baseDir:'/Applications/MAMP/htdocs/proj/'
+				baseDir:'./'
 			}
     });
 
