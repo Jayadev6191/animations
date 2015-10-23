@@ -2,14 +2,16 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var source = require('vinyl-source-stream');
 var browserify = require('browserify');
-var watchify = require('watchify');
+//var watchify = require('watchify');
+var concat=require('gulp-concat');
 var reactify = require('reactify');
 var browserSync = require('browser-sync');
+var minifyCss = require('gulp-minify-css');
 
 gulp.task('bundle',function(){
 	
 	var bundler=browserify({
-			entries:['./src/my.jsx'],
+			entries:['./src/jsx/my.jsx'],
 			transform: [reactify],
 			extensions: ['.jsx','.html'],
 			debug : true,
@@ -25,7 +27,7 @@ gulp.task('bundle',function(){
 			.bundle()
 			.on('error',gutil.log.bind(gutil,'Browserify Error'))
 			.pipe(source('main.js'))
-			.pipe(gulp.dest('./'))
+			.pipe(gulp.dest('./build/'))
 	};
 
 	build();
@@ -34,9 +36,15 @@ gulp.task('bundle',function(){
 });
 
 
-var server = ['bundle'];
+var cssify = ['cssify'];
+var bundle = ['bundle'];
 
-
+gulp.task('cssify',function(){
+	return gulp.src('./src/css/*.css')
+		.pipe(minifyCss())
+		.pipe(concat('main.css'))
+		.pipe(gulp.dest('./build/'))
+});
 
 // Static Server + watching scss/html files
 gulp.task('serve', function() {
@@ -47,8 +55,10 @@ gulp.task('serve', function() {
     });
 
     gulp.watch('*.html',browserSync.reload);
-    gulp.watch('./src/*.jsx',server);
-    gulp.watch('main.js',browserSync.reload);
+    gulp.watch('./src/**/*.jsx',bundle);
+    gulp.watch('./src/**/*.css',cssify);
+    gulp.watch('build/main.js',browserSync.reload);
+    gulp.watch('build/main.css',browserSync.reload);
 });
 
-gulp.task('default',['serve']);
+gulp.task('default',['bundle','cssify','serve']);
